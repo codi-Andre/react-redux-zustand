@@ -1,11 +1,12 @@
 import { describe, expect, it } from "vitest"
-import { next, play, player as reducer } from "../store/slices/player"
+import { PlayerState, next, play, player as reducer } from "./player"
 
-const exampleState = {
+const exampleState: PlayerState = {
   course: {
+    id: 1,
     modules: [
       {
-        id: "1",
+        id: 1,
         title: "Iniciando com React",
         lessons: [
           { id: "Jai8w6K_GnY", title: "CSS Modules", duration: "13:45" },
@@ -13,7 +14,7 @@ const exampleState = {
         ]
       },
       {
-        id: "2",
+        id: 2,
         title: "Estrutura da aplicação",
         lessons: [
           {
@@ -26,6 +27,7 @@ const exampleState = {
       }
     ]
   },
+  isLoading: false,
   currentModuleIndex: 0,
   currentLessonIndex: 0
 }
@@ -46,7 +48,13 @@ describe("player slice", () => {
   })
 
   it("should be able to jump to the next module automatically", () => {
-    const state = reducer({ ...exampleState, currentLessonIndex: 1 }, next())
+    const state = reducer(
+      {
+        ...exampleState,
+        currentLessonIndex: 1
+      },
+      next()
+    )
 
     expect(state.currentModuleIndex).toEqual(1)
     expect(state.currentLessonIndex).toEqual(0)
@@ -54,7 +62,11 @@ describe("player slice", () => {
 
   it("should not update the current module and lesson index if there is not next lesson available", () => {
     const state = reducer(
-      { ...exampleState, currentModuleIndex: 1, currentLessonIndex: 1 },
+      {
+        ...exampleState,
+        currentModuleIndex: 1,
+        currentLessonIndex: 1
+      },
       next()
     )
 
